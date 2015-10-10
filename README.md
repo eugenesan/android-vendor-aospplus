@@ -7,8 +7,7 @@ to AOSP builds.
 The idea is to be able to create AOSP builds that include all of the same functionality
 available in the device factory images.
 
-Support currently exists for Nexus 4, Nexus 7, and Galaxy Nexus devices on Android 4.2.2
-(Jellybean).
+Support currently exists for Nexus 4, Nexus 7, and Galaxy Nexus devices on Android 4.2.2 (Jellybean) and Nexus 5 on Android 6.0 (Marshmallow).
 
 Prequisites
 -----------
@@ -27,32 +26,21 @@ Adding to your build
 ```bash
 cd $ANDROID_BUILD_TOP
 cd vendor
-git clone git://githib.com/jpuderer/vendor-aospplus.git aospplus
+git clone git://githib.com/eugenesan/android-vendor-eugenesan.git eugenesan
 ```
 
-### 2. Add the vendor/aospplus directory to the device build.
+### 2. Add the vendor/google directory to the device build.
 
-In order for the aospplus components to be added to the build, we need to make sure they get included by the target's build.
+In order for the google components to be added to the build, we need to make sure they get included by the target's build.
 
-In the case of building for mako (Nexus 4), you would need to make the following changes in $ANDROID_BUILD_TOP/vendor/lge/mako/:
+In the case of building for hammerhead (Nexus 5), you would need to:
+* Add following in $ANDROID_BUILD_TOP/vendor/lge/hammerhead/BoardConfigVendor.mk:
 ```
---- BoardConfigVendor.mk.orig  2013-05-03 17:11:09.705229512 -0400
-+++ BoardConfigVendor.mk	2013-05-03 17:14:37.085224121 -0400
-@@ -17,3 +17,4 @@
- -include vendor/broadcom/$(LOCAL_STEM)
- -include vendor/lge/$(LOCAL_STEM)
- -include vendor/qcom/$(LOCAL_STEM)
-+-include vendor/aospplus/$(LOCAL_STEM)
+include vendor/google/$(LOCAL_STEM)
 ```
-
+* Add following in $ANDROID_BUILD_TOP/vendor/lge/hammerhead/device-vendor.mk
 ```
---- device-vendor.mk.orig	2013-05-03 17:10:30.393230534 -0400
-+++ device-vendor.mk	2013-05-03 17:09:51.393231548 -0400
-@@ -17,3 +17,4 @@
- $(call inherit-product-if-exists, vendor/broadcom/$(LOCAL_STEM))
- $(call inherit-product-if-exists, vendor/lge/$(LOCAL_STEM))
- $(call inherit-product-if-exists, vendor/qcom/$(LOCAL_STEM))
-+$(call inherit-product-if-exists, vendor/aospplus/$(LOCAL_STEM))
+$(call inherit-product-if-exists, vendor/google/$(LOCAL_STEM))
 ```
 
 Other devices require similar changes.
@@ -61,7 +49,6 @@ Other devices require similar changes.
 
 Download the factory image for your target device.  These can be found here for Nexus devices:
 https://developers.google.com/android/nexus/images
-
 
 The factory image will contain a zip file, which will contain a system.img file.  This file contains the compressed ext4 filesystem for the device's /system directory.
 

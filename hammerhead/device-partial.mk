@@ -1,4 +1,4 @@
-# JellyBean 4.2.2
+# Marshmallaw 6.0.0
 
 # Nexus Boot animation
 PRODUCT_COPY_FILES += \

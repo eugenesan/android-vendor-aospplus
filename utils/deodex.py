@@ -43,20 +43,36 @@ if __name__ == "__main__":
 		files = [os.path.join(root, f) for f in files]
 		
 		for odex_file in files:
-			basename = '.'.join(odex_file.split('.')[:-1])
-			if os.path.isfile(basename + '.apk'):
-				archive_file = basename + '.apk'
-			elif os.path.isfile(basename + '.jar'):
-				archive_file = basename + '.jar'
+			fullname=os.path.basename(odex_file)
+			basename = '.'.join(fullname.split('.')[:-1])
+			dirname=os.path.dirname(odex_file) + '/'
+			dirname1 = '/'.join(dirname.split('/')[:-2]) + '/'
+			dirname2 = '/'.join(dirname.split('/')[:-3]) + '/'
+
+			print "Treating %s --> %s" % (dirname2, basename)
+
+			if os.path.isfile(dirname + basename + '.apk'):
+				archive_file = dirname + basename + '.apk'
+			elif os.path.isfile(dirname1 + basename + '.apk'):
+				archive_file = dirname1 + basename + '.apk'
+			elif os.path.isfile(dirname2 + basename + '.apk'):
+				archive_file = dirname2 + basename + '.apk'
+			elif os.path.isfile(dirname + basename + '.jar'):
+				archive_file = dirname + basename + '.jar'
+			elif os.path.isfile(dirname1 + basename + '.jar'):
+				archive_file = dirname1 + basename + '.jar'
+			elif os.path.isfile(dirname2 + basename + '.jar'):
+				archive_file = dirname2 + basename + '.jar'
 			else:
-				sys.stderr.write("Skipping. Could not find archive file for odex: %s\n" % odex_file)
+				sys.stderr.write("Skipping. Could not find archive file for odex: %s\n" % basename)
 				continue
+
 			print "Deodexing %s --> %s" % (odex_file, archive_file)
 
 			smali_file = os.path.join(tempdir, "classes.smali")
 			dex_file = os.path.join(tempdir, "classes.dex")
 			zip_file = os.path.join(tempdir, "package.zip")
-			subprocess.check_call(['java', '-Xmx512m', '-jar', args.baksmali, '-d', framework_dir, '-x', odex_file, '-o', smali_file])
+			subprocess.check_call(['java', '-Xmx512m', '-jar', args.baksmali, '-a', '23', '-d', framework_dir, '-x', odex_file, '-o', smali_file])
 
 			subprocess.check_call(['java', '-Xmx512m', '-jar', args.smali, smali_file, '-o', dex_file])
 			shutil.rmtree(smali_file)
