@@ -32,7 +32,7 @@ if __name__ == "__main__":
 	odex_file_re = r'|'.join([fnmatch.translate(x) for x in ODEX_FILES])
 
 	# Check to see if system directory contains a framework directory
-	framework_dir = os.path.join(args.system_dir, 'framework')
+	framework_dir = os.path.join(args.system_dir, 'framework/arm')
 	if not os.path.isdir(framework_dir):
 		sys.stderr.write("Invalid system directory.  Directory must contain framework files.\n")
 		exit(1)
@@ -41,7 +41,7 @@ if __name__ == "__main__":
 	for root, dirs, files in os.walk(args.system_dir):
 		files = [f for f in files if re.match(odex_file_re, f)]
 		files = [os.path.join(root, f) for f in files]
-		
+
 		for odex_file in files:
 			fullname=os.path.basename(odex_file)
 			basename = '.'.join(fullname.split('.')[:-1])
@@ -49,7 +49,7 @@ if __name__ == "__main__":
 			dirname1 = '/'.join(dirname.split('/')[:-2]) + '/'
 			dirname2 = '/'.join(dirname.split('/')[:-3]) + '/'
 
-			print "Treating %s --> %s" % (dirname2, basename)
+			print "Treating %s @ %s" % (basename, dirname2)
 
 			if os.path.isfile(dirname + basename + '.apk'):
 				archive_file = dirname + basename + '.apk'
@@ -59,10 +59,13 @@ if __name__ == "__main__":
 				archive_file = dirname2 + basename + '.apk'
 			elif os.path.isfile(dirname + basename + '.jar'):
 				archive_file = dirname + basename + '.jar'
+				basename = basename + '.jar'
 			elif os.path.isfile(dirname1 + basename + '.jar'):
 				archive_file = dirname1 + basename + '.jar'
+				basename = basename + '.jar'
 			elif os.path.isfile(dirname2 + basename + '.jar'):
 				archive_file = dirname2 + basename + '.jar'
+				basename = basename + '.jar'
 			else:
 				sys.stderr.write("Skipping. Could not find archive file for odex: %s\n" % basename)
 				continue
@@ -72,8 +75,10 @@ if __name__ == "__main__":
 			smali_file = os.path.join(tempdir, "classes.smali")
 			dex_file = os.path.join(tempdir, "classes.dex")
 			zip_file = os.path.join(tempdir, "package.zip")
-			subprocess.check_call(['java', '-Xmx512m', '-jar', args.baksmali, '-a', '23', '-d', framework_dir, '-x', odex_file, '-o', smali_file])
 
+			# baksmali
+			subprocess.check_call(['java', '-Xmx512m', '-jar', args.baksmali, '-d', framework_dir, '-d', dirname, '-e', '/' + archive_file, '-c', 'boot.oat:' + basename, '-o', smali_file, '-x', odex_file])
+			# smali
 			subprocess.check_call(['java', '-Xmx512m', '-jar', args.smali, smali_file, '-o', dex_file])
 			shutil.rmtree(smali_file)
 			shutil.copy(archive_file, zip_file)
@@ -82,5 +87,5 @@ if __name__ == "__main__":
 			subprocess.check_call(['zipalign', '-f', '-v', '4', zip_file, archive_file])
 			os.remove(zip_file)
 			os.remove(odex_file)
+
 	shutil.rmtree(tempdir)
-			
