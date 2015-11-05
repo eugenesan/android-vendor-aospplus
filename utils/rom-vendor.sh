@@ -2,12 +2,12 @@
 
 # Drivers (https://developers.google.com/android/nexus/drivers)
 cd out/
-wget -c https://dl.google.com/dl/android/aosp/broadcom-hammerhead-mra58k-bed5b700.tgz
-wget -c https://dl.google.com/dl/android/aosp/lge-hammerhead-mra58k-25d00e3d.tgz
-wget -c https://dl.google.com/dl/android/aosp/qcom-hammerhead-mra58k-ff98ab07.tgz
+wget -c https://dl.google.com/dl/android/aosp/broadcom-hammerhead-mra58n-1b71cb95.tgz
+wget -c https://dl.google.com/dl/android/aosp/lge-hammerhead-mra58n-922a9ee4.tgz
+wget -c https://dl.google.com/dl/android/aosp/qcom-hammerhead-mra58n-630ddcfd.tgz
 
 # Images (https://developers.google.com/android/nexus/images)
-wget -c https://dl.google.com/dl/android/aosp/hammerhead-mra58k-factory-52364034.tgz
+wget -c https://dl.google.com/dl/android/aosp/hammerhead-mra58n-factory-aeca4139.tgz
 cd -
 
 # Unpacking
@@ -27,7 +27,7 @@ done
 git clone git://githib.com/eugenesan/android-vendor-google.git vendor/google
 
 # Unpack system image
-unzip -o out/hammerhead-mra58k/image-hammerhead-mra58k.zip system.img -d out
+unzip -o out/hammerhead-mra58k/image-hammerhead-mra58n.zip system.img -d out
 
 # Convert and mount system image
 vendor/google/boot.img.sh unmount
