@@ -4,7 +4,7 @@
 # http://forum.xda-developers.com/google-nexus-5/orig-development/kernel-furnace-1-0-0-lg-nexus-5-t2679826
 # Version 1.1
 
-: ${OUT:="out"}
+: ${OUT:="../../../out"}
 
 if [ -z "$(which cpio)" ] || [ -z "$(which gzip)" ] || [ -z "$(which cc)" ] || [ -z "$(which fakeroot)" ]; then
 	echo "Missing tools: cpio|gzip|cc|fakeroot, aborting..."
